@@ -11,7 +11,7 @@ jobs:
       - name: build
         working-directory: app/
         run: mvn clean verify
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: verademo.war
           path: app/target/
@@ -20,12 +20,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: verademo.war
           path: app/target/
       - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 1.8
       - name: Download the Pipeline Scanner
@@ -37,7 +37,7 @@ jobs:
       - name: Run Pipeline Scanner
         run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --file app/target/verademo.war --fail_on_severity="Very High, High"
         continue-on-error: true
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: ScanResults
           path: results.json
