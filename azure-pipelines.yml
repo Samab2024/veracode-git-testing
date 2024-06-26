@@ -24,10 +24,10 @@ steps:
   inputs:
     ConnectionDetailsSelection: 'Service Connection'
     AnalysisService: 'Veracode API'
-    veracodeAppProfile: 'Two_Apps_1'
+    veracodeAppProfile: 'Test_ADO'
     version: '$(build.buildNumber)'
     filepath: 'app/target/verademo.war'
-    optargs: '-deleteincompletescan 2'
+    optargs: '-include *.dll -exclude *.exe,*.sys,*.xlsm -deleteincompletescan 2'
     createProfile: true
     importResults: true
     maximumWaitTime: '60'
