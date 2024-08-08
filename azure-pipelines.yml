@@ -8,15 +8,15 @@ trigger:
 pool:
   name: default
 steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-  env:
-    VERACODE_API_KEY: $(VERACODE_API_KEY)
-    script: |
-      # Write your commands here
-      VERACODE_WRAPPER_VERSION=$(curl -sS "https://search.maven.org/solrsearch/select?q=g:%22com.veracode.vosp.api.wrappers%22&rows=20&wt=json" | jq -r '.response.docs[0].latestVersion') && curl -sS -o veracode-wrapper.jar "https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/${VERACODE_WRAPPER_VERSION}/vosp-api-wrappers-java-${VERACODE_WRAPPER_VERSION}.jar"
-      java -jar veracode-wrapper.jar -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY -action PromoteSandbox -buildid 28649112
+# - task: Bash@3
+#   inputs:
+#     targetType: 'inline'
+#   env:
+#     VERACODE_API_KEY: $(VERACODE_API_KEY)
+#     script: |
+#       # Write your commands here
+#       VERACODE_WRAPPER_VERSION=$(curl -sS "https://search.maven.org/solrsearch/select?q=g:%22com.veracode.vosp.api.wrappers%22&rows=20&wt=json" | jq -r '.response.docs[0].latestVersion') && curl -sS -o veracode-wrapper.jar "https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/${VERACODE_WRAPPER_VERSION}/vosp-api-wrappers-java-${VERACODE_WRAPPER_VERSION}.jar"
+#       java -jar veracode-wrapper.jar -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY -action PromoteSandbox -buildid 28649112
 #      java -jar veracode-wrapper.jar -credprofile default -action PromoteSandbox -buildid 28649112
 # - task: Maven@3
 #   displayName: Build with Maven
@@ -42,14 +42,18 @@ steps:
 #     importResults: true
 #     maximumWaitTime: '60'
 
-# - task: Veracode@3
-#   inputs:
-#     ConnectionDetailsSelection: 'Service Connection'
-#     AnalysisService: 'Veracode API'
-#     veracodeAppProfile: 'Two_Apps_2'
-#     version: '$(build.buildNumber)'
-#     filepath: 'app/target/verademo.war'
-#     optargs: '-deleteincompletescan 2'
-#     createProfile: true
-#     importResults: true
-#     maximumWaitTime: '60'
+- task: Veracode@3
+  inputs:
+    ConnectionDetailsSelection: 'Service Connection'
+    AnalysisService: 'Veracode API'
+    veracodeAppProfile: 'Test_00873984'
+    version: '$(build.buildNumber)'
+    filepath: './00873984_Archive.zip'
+    sandboxName: 'OneMember-D365-Sale-Test'
+    createSandBox: true
+    optargs: '-deleteincompletescan 2 -include *.xml, *.dll, *.pdb, *.js, *.html -exclude *.exe, *.msapp -scanallnonfataltoplevelmodules true'
+    createProfile: true
+    failBuildIfUploadAndScanBuildStepFails: true
+    importResults: true
+    failBuildOnPolicyFail: true
+    maximumWaitTime: '60'
