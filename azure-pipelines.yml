@@ -8,39 +8,12 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 steps:
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#   env:
-#     VERACODE_API_KEY: $(VERACODE_API_KEY)
-#     script: |
-#       # Write your commands here
-#       VERACODE_WRAPPER_VERSION=$(curl -sS "https://search.maven.org/solrsearch/select?q=g:%22com.veracode.vosp.api.wrappers%22&rows=20&wt=json" | jq -r '.response.docs[0].latestVersion') && curl -sS -o veracode-wrapper.jar "https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/${VERACODE_WRAPPER_VERSION}/vosp-api-wrappers-java-${VERACODE_WRAPPER_VERSION}.jar"
-#       java -jar veracode-wrapper.jar -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY -action PromoteSandbox -buildid 28649112
-#      java -jar veracode-wrapper.jar -credprofile default -action PromoteSandbox -buildid 28649112
-# - task: Maven@3
-#   displayName: Build with Maven
-#   inputs:
-#     mavenPomFile: 'app/pom.xml'
-#     mavenOptions: '-Xmx3072m'
-#     javaHomeOption: 'JDKVersion'
-#     jdkVersionOption: '1.8'
-#     jdkArchitectureOption: 'x64'
-#     publishJUnitResults: true
-#     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-#     goals: 'package'
-
-# - task: Veracode@3
-#   inputs:
-#     ConnectionDetailsSelection: 'Service Connection'
-#     AnalysisService: 'Veracode API'
-#     veracodeAppProfile: 'Test_ADO'
-#     version: '$(build.buildNumber)'
-#     filepath: 'app/target/verademo.war'
-#     optargs: '-include *.dll -exclude *.exe,*.sys,*.xlsm -deleteincompletescan 1'
-#     createProfile: true
-#     importResults: true
-#     maximumWaitTime: '60'
+- task: CmdLine@2
+  displayName: Veracode static scan
+  inputs:
+    script: |
+      curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+      ./veracode package -vas . --output ./veracode-artifact/
 
 - task: Veracode@3
   inputs:
@@ -49,7 +22,7 @@ steps:
     apiKey: '$(VERACODE_API_KEY_SECRET)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
-    filepath: './00873984_Archive.zip'
+    filepath: './veracode-artifact/*'
     sandboxName: 'OneMember-D365-Sale-Test'
     createSandBox: true
     optargs: '-deleteincompletescan 2 -include *.xml, *.dll, *.pdb, *.js, *.html -exclude *.exe, *.msapp -scanallnonfataltoplevelmodules true'
