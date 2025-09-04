@@ -22,7 +22,7 @@ steps:
     apiKey: '$(VERACODE_API_KEY_SECRET)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
-    filepath: './veracode-artifact/*'
+    filepath: './veracode-artifact/verademo.war'
     sandboxName: 'OneMember-D365-Sale-Test'
     createSandBox: true
     optargs: '-deleteincompletescan 2 -include *.xml, *.dll, *.pdb, *.js, *.html -exclude *.exe, *.msapp -scanallnonfataltoplevelmodules true'
