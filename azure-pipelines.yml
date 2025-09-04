@@ -14,12 +14,27 @@ steps:
     script: |
       curl -fsS https://tools.veracode.com/veracode-cli/install | sh
       ./veracode package -vas . --output ./veracode-artifact/
-
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      #!/bin/bash
+     
+      # Create the .Veracode folder if it doesn't exist
+      cd $(eval echo ~$USER) && mkdir -p ".veracode"
+     
+      # Add messages to the credentials file
+      # user may use pipeline variables to mask Id and Key
+      cat << EOF > ".veracode/credentials"
+      [default]
+      veracode_api_key_id = $(VERACODE_API_KEY_ID)
+      veracode_api_key_secret = $(VERACODE_API_KEY_SECRET)
+      EOF
 - task: Veracode@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
     apiId: '$(VERACODE_API_KEY_ID)'
-    apiKey: '$(VERACODE_API_KEY_SECRET)'
+    apiKey: '$(VERACODE_API_KEY)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
     filepath: './veracode-artifact/verademo.war'
