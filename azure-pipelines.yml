@@ -33,7 +33,7 @@ steps:
 - task: Veracode@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
-    apiId: '$(VERACODE_API_KEY_ID)'
+    apiId: '$(VERACODE_API_ID)'
     apiKey: '$(VERACODE_API_KEY)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
