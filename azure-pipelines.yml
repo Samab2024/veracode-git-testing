@@ -32,6 +32,9 @@ steps:
       EOF
 - task: Veracode@3
   inputs:
+    ConnectionDetailsSelection: 'Credentials'
+    apiId: '$(VERACODE_API_KEY_ID)'
+    apiKey: '$(VERACODE_API_KEY_SECRET)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
     filepath: './veracode-artifact/verademo.war'
