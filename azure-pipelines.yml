@@ -6,7 +6,7 @@
 trigger:
 - main
 pool:
-  name: default
+  vmImage: 'ubuntu-latest'
 steps:
 # - task: Bash@3
 #   inputs:
@@ -44,8 +44,9 @@ steps:
 
 - task: Veracode@3
   inputs:
-    ConnectionDetailsSelection: 'Service Connection'
-    AnalysisService: 'Veracode API'
+    ConnectionDetailsSelection: 'Credentials'
+    apiId: '$(VERACODE_API_KEY_ID)'
+    apiKey: '$(VERACODE_API_KEY_SECRET)'
     veracodeAppProfile: 'Test_00873984'
     version: '$(build.buildNumber)'
     filepath: './00873984_Archive.zip'
